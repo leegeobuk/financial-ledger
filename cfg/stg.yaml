@@ -1,0 +1,9 @@
+db:
+  type: "mysql"
+  url: "127.0.0.1:3306"
+  username: "user"
+  password: "1111"
+
+server:
+  host: "http://127.0.0.1"
+  port: "8080"
