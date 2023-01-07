@@ -1,8 +1,6 @@
 package api
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,5 +12,5 @@ import (
 //	@Failure		500	{object}	resource.ResErr
 //	@Router			/api/ledger/ping [get]
 func (a *API) Ping(c *gin.Context) {
-	c.JSON(http.StatusOK, "pong")
+	OK(c, "pong")
 }
