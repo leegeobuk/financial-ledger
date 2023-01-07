@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
 
@@ -46,7 +47,7 @@ func Test_getProfile(t *testing.T) {
 	}
 }
 
-func Test_initConfig(t *testing.T) {
+func Test_loadConfig(t *testing.T) {
 	tests := []struct {
 		name    string
 		profile string
@@ -75,9 +76,41 @@ func Test_initConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := initConfig(tt.profile)
+			err := loadConfig(tt.profile)
 			if !reflect.DeepEqual(reflect.TypeOf(err), reflect.TypeOf(tt.wantErr)) {
-				t.Errorf("Init() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("loadConfig() error = %T, wantErr %T", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func Test_setGinMode(t *testing.T) {
+	tests := []struct {
+		name    string
+		profile string
+		want    string
+	}{
+		{
+			name:    "success case: profile=dev",
+			profile: "dev",
+			want:    "debug",
+		},
+		{
+			name:    "success case: profile=stg",
+			profile: "stg",
+			want:    "test",
+		},
+		{
+			name:    "success case: profile=prd",
+			profile: "prd",
+			want:    "release",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setGinMode(tt.profile)
+			if got := gin.Mode(); got != tt.want {
+				t.Errorf("setGinMode() = %v, want %v", got, tt.want)
 			}
 		})
 	}
