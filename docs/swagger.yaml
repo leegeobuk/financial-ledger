@@ -1,0 +1,51 @@
+definitions:
+  resource.ResErr:
+    properties:
+      error:
+        type: string
+    type: object
+  resource.ResGetTime:
+    properties:
+      date:
+        type: string
+      timestamp:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/ledger/ping:
+    get:
+      description: Ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/resource.ResErr'
+      summary: Ping
+      tags:
+      - Basic
+  /api/ledger/time:
+    get:
+      description: Time
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resource.ResGetTime'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/resource.ResErr'
+      summary: Time
+      tags:
+      - Basic
+swagger: "2.0"

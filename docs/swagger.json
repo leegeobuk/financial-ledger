@@ -1,0 +1,81 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/ledger/ping": {
+            "get": {
+                "description": "Ping",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Basic"
+                ],
+                "summary": "Ping",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/ledger/time": {
+            "get": {
+                "description": "Time",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Basic"
+                ],
+                "summary": "Time",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResGetTime"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "resource.ResErr": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "resource.ResGetTime": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
