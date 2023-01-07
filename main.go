@@ -1,8 +1,12 @@
 package main
 
 import (
+	"errors"
 	"log"
+	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/gin-gonic/gin"
 	"github.com/leegeobuk/financial-ledger/api"
@@ -13,18 +17,11 @@ import (
 func init() {
 	profile := getProfile()
 	log.Println("CONFIG_PROFILE:", profile)
-	switch profile {
-	case "dev":
-		gin.SetMode(gin.DebugMode)
-	case "stg":
-		gin.SetMode(gin.TestMode)
-	case "prd":
-		gin.SetMode(gin.ReleaseMode)
+	if err := loadConfig(profile); err != nil {
+		log.Fatalf("Error loading config file: %v", err)
 	}
 
-	if err := initConfig(profile); err != nil {
-		log.Fatalf("Error while loading config file: %v", err)
-	}
+	setGinMode(profile)
 }
 
 func getProfile() string {
@@ -36,7 +33,7 @@ func getProfile() string {
 	return profile
 }
 
-func initConfig(profile string) error {
+func loadConfig(profile string) error {
 	viper.AddConfigPath("./cfg")
 	viper.SetConfigName(profile)
 	viper.SetConfigType("yaml")
@@ -44,14 +41,50 @@ func initConfig(profile string) error {
 		return err
 	}
 
-	if err := viper.Unmarshal(&cfg.Env); err != nil {
-		return err
-	}
+	return viper.Unmarshal(&cfg.Env)
+}
 
-	return nil
+func setGinMode(profile string) {
+	switch profile {
+	case "dev":
+		gin.SetMode(gin.DebugMode)
+	case "stg":
+		gin.SetMode(gin.TestMode)
+	case "prd":
+		gin.SetMode(gin.ReleaseMode)
+	}
 }
 
 func main() {
-	ledgerAPI := api.New()
-	ledgerAPI.Run()
+	idleConnsClosed, stopChan := make(chan struct{}), make(chan os.Signal, 1)
+	signal.Notify(stopChan, syscall.SIGINT, syscall.SIGTERM)
+
+	host := cfg.Env.Server.Host
+	port := cfg.Env.Server.Port
+	server := api.New(host, port)
+
+	go gracefulShutdown(stopChan, idleConnsClosed, server)
+
+	if err := server.Run(); !errors.Is(err, http.ErrServerClosed) {
+		log.Fatalf("Error running Server: %v", err)
+	}
+
+	<-idleConnsClosed
+}
+
+// gracefulShutdown gracefully shutdowns server
+// when interrupt or terminal signal is received.
+func gracefulShutdown(stopChan chan os.Signal, idleConnsClosed chan struct{}, server *api.Server) {
+	select {
+	case <-stopChan:
+		log.Println("Got stop signal. Start cleaning...")
+
+		if err := server.Shutdown(); err != nil {
+			log.Printf("Error while shutting down api server: %v", err)
+		}
+		log.Println("Server shutdown")
+
+		log.Println("Cleaning done. Bye.")
+		close(idleConnsClosed)
+	}
 }

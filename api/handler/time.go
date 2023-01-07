@@ -1,4 +1,4 @@
-package api
+package handler
 
 import (
 	"strconv"
@@ -15,7 +15,7 @@ import (
 //	@Success		200	{object}	resource.ResGetTime
 //	@Failure		500	{object}	resource.ResErr
 //	@Router			/api/ledger/time [get]
-func (a *API) Time(c *gin.Context) {
+func Time(c *gin.Context) {
 	now := time.Now()
 	timestamp := strconv.FormatInt(now.Unix(), 10)
 	date := now.Format("2006-01-02 15:04")
