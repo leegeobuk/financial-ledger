@@ -12,4 +12,8 @@ buildimage:	## Build docker image
 	docker build -t financial-ledger:$(profile) -f ./docker/Dockerfile-$(profile) .
 
 runimage:	## Run docker image
-	docker run -p 8080:8080 --name ledger --rm financial-ledger:$(profile)
+	docker run -d --name ledger --rm -p 8080:8080 financial-ledger:$(profile)
+
+fmt:		## Formats code and then swagger annotations
+	go fmt ./...
+	swag fmt

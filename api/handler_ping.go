@@ -1,0 +1,18 @@
+package api
+
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
+//	@Tags			Basic
+//	@Summary		Ping
+//	@Description	Ping
+//	@Produce		json
+//	@Success		200	{string}	pong
+//	@Failure		500	{object}	resource.ResErr
+//	@Router			/api/ledger/ping [get]
+func (a *API) Ping(c *gin.Context) {
+	c.JSON(http.StatusOK, "pong")
+}
