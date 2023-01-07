@@ -1,8 +1,9 @@
 db:
   type: "mysql"
-  url: "127.0.0.1:3306"
-  username: "user"
+  user: "user"
   password: "1111"
+  address: "127.0.0.1:3306"
+  schema: "ledger"
 
 server:
   host: "http://127.0.0.1"

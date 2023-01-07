@@ -8,6 +8,8 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/leegeobuk/financial-ledger/cfg"
+	"github.com/leegeobuk/financial-ledger/db"
 )
 
 // Server can start and stop api server.
@@ -17,10 +19,13 @@ type Server struct {
 
 	server *http.Server
 	router *gin.Engine
+
+	db *db.MySQL
 }
 
 // New returns new Server struct.
-func New(host, port string) *Server {
+func New(mysql *db.MySQL) *Server {
+	host, port := cfg.Env.Server.Host, cfg.Env.Server.Port
 	router := gin.Default()
 
 	return &Server{
@@ -31,6 +36,7 @@ func New(host, port string) *Server {
 			Handler: router,
 		},
 		router: router,
+		db:     mysql,
 	}
 }
 

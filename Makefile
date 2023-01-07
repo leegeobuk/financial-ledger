@@ -11,9 +11,15 @@ build: 		## Build executable
 buildimage:	## Build docker image
 	docker build -t financial-ledger:$(profile) -f ./docker/Dockerfile-$(profile) .
 
-runimage:	## Run docker image
+runimage:	## Run app docker image
 	docker run -d --name ledger --rm -p 8080:8080 financial-ledger:$(profile)
 
 fmt:		## Formats code and then swagger annotations
 	go fmt ./...
 	swag fmt
+
+setup:		## Setup dependencies using docker-compose
+	docker-compose -f ./docker/docker-compose.yaml --env-file ./docker/.env up -d
+
+teardown:	## Tear down dependencies using docker-compose
+	docker-compose -f ./docker/docker-compose.yaml down
