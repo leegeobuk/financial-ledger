@@ -6,18 +6,18 @@ var Env = Config{}
 
 // Config contains all envs loaded from config file.
 type Config struct {
-	DB     DB     `yaml:"db"`
-	Server Server `yaml:"server"`
+	DB     DB     `mapstructure:"db"`
+	Server Server `mapstructure:"server"`
 }
 
 // DB contains database-related envs.
 type DB struct {
-	Type     string `yaml:"type"`
-	User     string `yaml:"user"`
-	Password string `yaml:"password"`
-	Proto    string `yaml:"protocol"`
-	Addr     string `yaml:"address"`
-	Schema   string `yaml:"schema"`
+	Type     string `mapstructure:"type"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
+	Proto    string `mapstructure:"protocol"`
+	Addr     string `mapstructure:"address"`
+	Schema   string `mapstructure:"schema"`
 }
 
 // DSN returns Data Source Name for db connection.
@@ -27,6 +27,6 @@ func (db DB) DSN() string {
 
 // Server contains server-related envs.
 type Server struct {
-	Host string `yaml:"host"`
-	Port string `yaml:"port"`
+	Host string `mapstructure:"host"`
+	Port string `mapstructure:"port"`
 }

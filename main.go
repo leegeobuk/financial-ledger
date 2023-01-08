@@ -29,7 +29,7 @@ func init() {
 func getProfile() string {
 	profile := os.Getenv("CONFIG_PROFILE")
 	if len(profile) <= 0 {
-		profile = "dev"
+		profile = "local"
 	}
 
 	return profile
@@ -48,12 +48,16 @@ func loadConfig(profile string) error {
 
 func setGinMode(profile string) {
 	switch profile {
-	case "dev":
+	case "local":
 		gin.SetMode(gin.DebugMode)
+	case "dev":
+		gin.SetMode(gin.TestMode)
 	case "stg":
 		gin.SetMode(gin.TestMode)
 	case "prd":
 		gin.SetMode(gin.ReleaseMode)
+	default:
+		gin.SetMode(gin.DebugMode)
 	}
 }
 
@@ -63,20 +67,23 @@ func main() {
 
 	// create db
 	dsn := cfg.Env.DB.DSN()
+	log.Println("DSN:", dsn)
+	log.Println("Creating db...")
 	mysql, err := db.NewMySQL(dsn)
 	if err != nil {
 		log.Fatalf("Error connecting to db: %v", err)
 	}
 
+	log.Println("Pinging db...")
 	const (
 		interval = time.Second
 		reps     = 30
 	)
 	if err = mysql.RetryPing(interval, reps); err != nil {
-		log.Fatalf("Failed to ping db for %s: %v", reps*interval, err)
+		log.Fatalf("Failed pinging db for %s: %v", reps*interval, err)
 	}
 
-	// create api server
+	log.Println("Creating API server...")
 	server := api.New(mysql)
 
 	// gracefully shutdowns app when interrupt or terminal signal is received.
@@ -95,11 +102,12 @@ func main() {
 			}
 			log.Println("Server shutdown")
 
-			log.Println("Gracefully shutdown. Bye.")
+			log.Println("Graceful shutdown done. Bye.")
 			close(idleConnsClosed)
 		}
 	}()
 
+	log.Println("Running API server...")
 	if err = server.Run(); !errors.Is(err, http.ErrServerClosed) {
 		log.Fatalf("Error running Server: %v", err)
 	}

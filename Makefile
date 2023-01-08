@@ -1,6 +1,6 @@
 test:  		## Run unit test with coverage
 	go clean -testcache
-	go test -cover -coverprofile=c.out . ./api ./db
+	go test -cover -coverprofile=c.out . ./api ./cfg ./db
 
 testcover:	## Open coverage file as html
 	go tool cover -html=c.out
@@ -12,9 +12,9 @@ buildimage:	## Build docker image
 	docker build -t financial-ledger:$(profile) -f ./docker/Dockerfile-$(profile) .
 
 runimage:	## Run app docker image
-	docker run -d --name ledger --rm -p 8080:8080 financial-ledger:$(profile)
+	docker run -d --rm --network ledger --name ledger -p 8080:8080 financial-ledger:$(profile)
 
-fmt:		## Formats code and then swagger annotations
+fmt:		## Formats code and swagger annotations
 	go fmt ./...
 	swag fmt
 
