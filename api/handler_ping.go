@@ -1,4 +1,4 @@
-package handler
+package api
 
 import (
 	"github.com/gin-gonic/gin"
@@ -11,6 +11,6 @@ import (
 //	@Success		200	{string}	pong
 //	@Failure		500	{object}	resource.ResErr
 //	@Router			/api/ledger/ping [get]
-func Ping(c *gin.Context) {
+func (s *Server) Ping(c *gin.Context) {
 	OK(c, "pong")
 }
