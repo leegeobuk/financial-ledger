@@ -1,18 +1,18 @@
 package api
 
 import (
-	"log"
 	"net"
 	"reflect"
 	"testing"
 
 	"github.com/leegeobuk/financial-ledger/cfg"
+	"github.com/leegeobuk/financial-ledger/testutil"
 )
 
 func TestServer_Run(t *testing.T) {
 	// given
-	if err := setupConfig("dev"); err != nil {
-		log.Fatalf("Error setting up: %v", err)
+	if err := testutil.SetupConfig("dev"); err != nil {
+		t.Fatalf("Error setting up config: %v", err)
 	}
 	host := cfg.Env.Server.Host
 
@@ -56,8 +56,8 @@ func TestServer_Run(t *testing.T) {
 
 func TestServer_Shutdown(t *testing.T) {
 	// given
-	if err := setupConfig("dev"); err != nil {
-		log.Fatalf("Error setting up: %v", err)
+	if err := testutil.SetupConfig("dev"); err != nil {
+		t.Fatalf("Error setting up config: %v", err)
 	}
 
 	tests := []struct {

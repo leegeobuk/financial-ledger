@@ -2,6 +2,7 @@ db:
   type: "mysql"
   user: "user"
   password: "1111"
+  protocol: "tcp"
   address: "127.0.0.1:3306"
   schema: "ledger"
 

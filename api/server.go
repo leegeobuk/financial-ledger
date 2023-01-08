@@ -41,16 +41,16 @@ func New(mysql *db.MySQL) *Server {
 }
 
 // Run sets CORS and all handlers and then runs api server.
-func (a *Server) Run() error {
-	a.setCORS()
-	a.setRoutes()
+func (s *Server) Run() error {
+	s.setCORS()
+	s.setRoutes()
 
-	return a.server.ListenAndServe()
+	return s.server.ListenAndServe()
 }
 
-func (a *Server) setCORS() gin.IRoutes {
-	return a.router.Use(cors.New(cors.Config{
-		AllowOrigins:     strings.Split(a.host, ","),
+func (s *Server) setCORS() gin.IRoutes {
+	return s.router.Use(cors.New(cors.Config{
+		AllowOrigins:     strings.Split(s.host, ","),
 		AllowMethods:     []string{"GET", "POST"},
 		AllowHeaders:     []string{"Origin"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -59,9 +59,9 @@ func (a *Server) setCORS() gin.IRoutes {
 }
 
 // Shutdown gracefully shutdowns api server
-func (a *Server) Shutdown() error {
+func (s *Server) Shutdown() error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
 
-	return a.server.Shutdown(ctx)
+	return s.server.Shutdown(ctx)
 }
