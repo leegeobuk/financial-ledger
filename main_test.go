@@ -16,9 +16,14 @@ func Test_getProfile(t *testing.T) {
 		want    string
 	}{
 		{
-			name:    "default case: CONFIG_PROFILE unset",
+			name:    "success case: CONFIG_PROFILE unset",
 			profile: "",
-			want:    "dev",
+			want:    "local",
+		},
+		{
+			name:    "success case: CONFIG_PROFILE=local",
+			profile: "local",
+			want:    "local",
 		},
 		{
 			name:    "success case: CONFIG_PROFILE=dev",
@@ -59,6 +64,11 @@ func Test_loadConfig(t *testing.T) {
 			wantErr: viper.ConfigFileNotFoundError{},
 		},
 		{
+			name:    "success case: profile=local",
+			profile: "local",
+			wantErr: nil,
+		},
+		{
 			name:    "success case: profile=dev",
 			profile: "dev",
 			wantErr: nil,
@@ -76,7 +86,10 @@ func Test_loadConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// when
 			err := loadConfig(tt.profile)
+
+			// then
 			if !reflect.DeepEqual(reflect.TypeOf(err), reflect.TypeOf(tt.wantErr)) {
 				t.Errorf("loadConfig() error = %T, wantErr %T", err, tt.wantErr)
 			}
@@ -91,9 +104,19 @@ func Test_setGinMode(t *testing.T) {
 		want    string
 	}{
 		{
+			name:    "success case: profile=unknown",
+			profile: "unknown",
+			want:    "debug",
+		},
+		{
+			name:    "success case: profile=local",
+			profile: "local",
+			want:    "debug",
+		},
+		{
 			name:    "success case: profile=dev",
 			profile: "dev",
-			want:    "debug",
+			want:    "test",
 		},
 		{
 			name:    "success case: profile=stg",

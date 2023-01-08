@@ -21,7 +21,7 @@ var (
 
 func TestMain(m *testing.M) {
 	// setup
-	if err := testutil.SetupConfig("dev"); err != nil {
+	if err := testutil.SetupConfig("local"); err != nil {
 		log.Fatalf("Error setting up config: %v", err)
 	}
 

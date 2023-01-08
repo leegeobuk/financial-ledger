@@ -3,7 +3,7 @@ db:
   user: "user"
   password: "1111"
   protocol: "tcp"
-  address: "ledger-db:3306"
+  address: "127.0.0.1:3306"
   schema: "ledger"
 
 server:
