@@ -14,8 +14,8 @@ type MySQL struct {
 }
 
 // NewMySQL returns new MySQL.
-func NewMySQL(connectionString string) (*MySQL, error) {
-	db, err := sql.Open(cfg.Env.DB.Type, connectionString)
+func NewMySQL(dsn string) (*MySQL, error) {
+	db, err := sql.Open(cfg.Env.DB.Type, dsn)
 	if err != nil {
 		return nil, err
 	}

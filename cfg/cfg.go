@@ -15,13 +15,14 @@ type DB struct {
 	Type     string `yaml:"type"`
 	User     string `yaml:"user"`
 	Password string `yaml:"password"`
+	Proto    string `yaml:"protocol"`
 	Addr     string `yaml:"address"`
 	Schema   string `yaml:"schema"`
 }
 
 // DSN returns Data Source Name for db connection.
 func (db DB) DSN() string {
-	return fmt.Sprintf("%s:%s@%s/%s", db.User, db.Password, db.Addr, db.Schema)
+	return fmt.Sprintf("%s:%s@%s(%s)/%s", db.User, db.Password, db.Proto, db.Addr, db.Schema)
 }
 
 // Server contains server-related envs.
