@@ -1,6 +1,7 @@
 package cfg
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/spf13/viper"
@@ -52,8 +53,12 @@ func setupConfig(profile string) error {
 	viper.SetConfigName(profile)
 	viper.SetConfigType("yaml")
 	if err := viper.ReadInConfig(); err != nil {
-		return err
+		return fmt.Errorf("load config: %w", err)
 	}
 
-	return viper.Unmarshal(&Env)
+	if err := viper.Unmarshal(&Env); err != nil {
+		return fmt.Errorf("unmarshal envs to config: %w", err)
+	}
+
+	return nil
 }

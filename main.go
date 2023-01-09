@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -28,7 +29,7 @@ func init() {
 
 func getProfile() string {
 	profile := os.Getenv("CONFIG_PROFILE")
-	if len(profile) <= 0 {
+	if len(profile) == 0 {
 		profile = "local"
 	}
 
@@ -40,10 +41,14 @@ func loadConfig(profile string) error {
 	viper.SetConfigName(profile)
 	viper.SetConfigType("yaml")
 	if err := viper.ReadInConfig(); err != nil {
-		return err
+		return fmt.Errorf("load config: %w", err)
 	}
 
-	return viper.Unmarshal(&cfg.Env)
+	if err := viper.Unmarshal(&cfg.Env); err != nil {
+		return fmt.Errorf("unmarshal envs to config: %w", err)
+	}
+
+	return nil
 }
 
 func setGinMode(profile string) {
@@ -88,23 +93,21 @@ func main() {
 
 	// gracefully shutdowns app when interrupt or terminal signal is received.
 	go func() {
-		select {
-		case <-stopChan:
-			log.Println("Got stop signal. Start graceful shutdown...")
+		<-stopChan
+		log.Println("Got stop signal. Start graceful shutdown...")
 
-			if err = mysql.Close(); err != nil {
-				log.Printf("Error closing db: %v", err)
-			}
-			log.Println("DB closed")
-
-			if err = server.Shutdown(); err != nil {
-				log.Printf("Error while shutting down api server: %v", err)
-			}
-			log.Println("Server shutdown")
-
-			log.Println("Graceful shutdown done. Bye.")
-			close(idleConnsClosed)
+		if err = mysql.Close(); err != nil {
+			log.Printf("Error closing db: %v", err)
 		}
+		log.Println("DB closed")
+
+		if err = server.Shutdown(); err != nil {
+			log.Printf("Error while shutting down api server: %v", err)
+		}
+		log.Println("Server shutdown")
+
+		log.Println("Graceful shutdown done. Bye.")
+		close(idleConnsClosed)
 	}()
 
 	log.Println("Running API server...")

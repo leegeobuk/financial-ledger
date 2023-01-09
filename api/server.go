@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -28,13 +29,16 @@ func New(mysql *db.MySQL) *Server {
 	host, port := cfg.Env.Server.Host, cfg.Env.Server.Port
 	router := gin.Default()
 
+	server := &http.Server{
+		Addr:              ":" + port,
+		Handler:           router,
+		ReadHeaderTimeout: time.Second * 10,
+	}
+
 	return &Server{
-		port: port,
-		host: host,
-		server: &http.Server{
-			Addr:    ":" + port,
-			Handler: router,
-		},
+		port:   port,
+		host:   host,
+		server: server,
 		router: router,
 		db:     mysql,
 	}
@@ -45,7 +49,11 @@ func (s *Server) Run() error {
 	s.setCORS()
 	s.setRoutes()
 
-	return s.server.ListenAndServe()
+	if err := s.server.ListenAndServe(); err != nil {
+		return fmt.Errorf("run api server: %w", err)
+	}
+
+	return nil
 }
 
 func (s *Server) setCORS() gin.IRoutes {
@@ -58,10 +66,14 @@ func (s *Server) setCORS() gin.IRoutes {
 	}))
 }
 
-// Shutdown gracefully shutdowns api server
+// Shutdown gracefully shutdowns api server.
 func (s *Server) Shutdown() error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
 
-	return s.server.Shutdown(ctx)
+	if err := s.server.Shutdown(ctx); err != nil {
+		return fmt.Errorf("shutdown api server: %w", err)
+	}
+
+	return nil
 }
