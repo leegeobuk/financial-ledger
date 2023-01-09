@@ -57,17 +57,17 @@ func setupTestContainer(ctx context.Context) (*testContainer, error) {
 		Started:          true,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("setup test container: %w", err)
 	}
 
 	host, err := container.Host(ctx)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get test container host: %w", err)
 	}
 
 	port, err := container.MappedPort(ctx, "3306/tcp")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get test container port: %w", err)
 	}
 
 	return &testContainer{

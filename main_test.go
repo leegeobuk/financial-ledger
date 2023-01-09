@@ -1,12 +1,10 @@
 package main
 
 import (
-	"os"
-	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 )
 
 func Test_getProfile(t *testing.T) {
@@ -43,7 +41,7 @@ func Test_getProfile(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			os.Setenv("CONFIG_PROFILE", tt.profile)
+			t.Setenv("CONFIG_PROFILE", tt.profile)
 
 			if got := getProfile(); got != tt.want {
 				t.Errorf("getProfile() = %v, want %v", got, tt.want)
@@ -54,34 +52,40 @@ func Test_getProfile(t *testing.T) {
 
 func Test_loadConfig(t *testing.T) {
 	tests := []struct {
-		name    string
-		profile string
-		wantErr error
+		name       string
+		shouldFail bool
+		profile    string
+		wantErrStr string
 	}{
 		{
-			name:    "fail case: profile=unknown",
-			profile: "unknown",
-			wantErr: viper.ConfigFileNotFoundError{},
+			name:       "fail case: profile=unknown",
+			shouldFail: true,
+			profile:    "unknown",
+			wantErrStr: "load config",
 		},
 		{
-			name:    "success case: profile=local",
-			profile: "local",
-			wantErr: nil,
+			name:       "success case: profile=local",
+			shouldFail: false,
+			profile:    "local",
+			wantErrStr: "",
 		},
 		{
-			name:    "success case: profile=dev",
-			profile: "dev",
-			wantErr: nil,
+			name:       "success case: profile=dev",
+			shouldFail: false,
+			profile:    "dev",
+			wantErrStr: "",
 		},
 		{
-			name:    "success case: profile=stg",
-			profile: "stg",
-			wantErr: nil,
+			name:       "success case: profile=stg",
+			shouldFail: false,
+			profile:    "stg",
+			wantErrStr: "",
 		},
 		{
-			name:    "success case: profile=prd",
-			profile: "prd",
-			wantErr: nil,
+			name:       "success case: profile=prd",
+			shouldFail: false,
+			profile:    "prd",
+			wantErrStr: "",
 		},
 	}
 	for _, tt := range tests {
@@ -90,8 +94,16 @@ func Test_loadConfig(t *testing.T) {
 			err := loadConfig(tt.profile)
 
 			// then
-			if !reflect.DeepEqual(reflect.TypeOf(err), reflect.TypeOf(tt.wantErr)) {
-				t.Errorf("loadConfig() error = %T, wantErr %T", err, tt.wantErr)
+			if tt.shouldFail {
+				if got := err.Error(); !strings.HasPrefix(got, tt.wantErrStr) {
+					t.Errorf("loadConfig() error = %v, wantErrStr %s", err, tt.wantErrStr)
+				}
+
+				return
+			}
+
+			if err != nil {
+				t.Errorf("loadConfig() error = %v, wantErrStr %s", err, tt.wantErrStr)
 			}
 		})
 	}

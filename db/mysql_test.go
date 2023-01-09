@@ -1,16 +1,13 @@
 package db
 
 import (
-	"errors"
 	"log"
-	"net"
 	"os"
 	"reflect"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/go-sql-driver/mysql"
 	"github.com/leegeobuk/financial-ledger/testutil"
 )
 
@@ -41,47 +38,61 @@ func TestMain(m *testing.M) {
 	code := m.Run()
 
 	// tear down
-	mockDB.Close()
-	mockContainer.Terminate(testCtx)
+	_ = mockDB.Close()
+	_ = mockContainer.Terminate(testCtx)
 	os.Exit(code)
 }
 
 func TestNewMySQL(t *testing.T) {
 	tests := []struct {
-		name    string
-		replace string
-		wantErr error
+		name       string
+		shouldFail bool
+		replace    string
+		wantErrStr string
 	}{
 		{
-			name:    "fail case: no /",
-			replace: "/",
-			wantErr: errors.New(""),
+			name:       "fail case: no /",
+			shouldFail: true,
+			replace:    "/",
+			wantErrStr: "new MySQL",
 		},
 		{
-			name:    "fail case: no (",
-			replace: "(",
-			wantErr: errors.New(""),
+			name:       "fail case: no (",
+			shouldFail: true,
+			replace:    "(",
+			wantErrStr: "new MySQL",
 		},
 		{
-			name:    "fail case: no )",
-			replace: ")",
-			wantErr: errors.New(""),
+			name:       "fail case: no )",
+			shouldFail: true,
+			replace:    ")",
+			wantErrStr: "new MySQL",
 		},
 		{
-			name:    "success case: valid dsn",
-			replace: "",
-			wantErr: nil,
+			name:       "success case: valid dsn",
+			replace:    "",
+			wantErrStr: "",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// given
+			dsn := strings.ReplaceAll(mockContainer.dsn(), tt.replace, "")
+
 			// when
-			dsn := strings.Replace(mockContainer.dsn(), tt.replace, "", -1)
+			_, err := NewMySQL(dsn)
 
 			// then
-			_, err := NewMySQL(dsn)
-			if !reflect.DeepEqual(reflect.TypeOf(err), reflect.TypeOf(tt.wantErr)) {
-				t.Errorf("NewMySQL() error = %T, wantErr %T", err, tt.wantErr)
+			if tt.shouldFail {
+				if got := err.Error(); !strings.HasPrefix(got, tt.wantErrStr) {
+					t.Errorf("NewMySQL() error = %v, wantErrStr %s", err, tt.wantErrStr)
+				}
+
+				return
+			}
+
+			if err != nil {
+				t.Errorf("NewMySQL() error = %v, wantErrStr %s", err, tt.wantErrStr)
 			}
 		})
 	}
@@ -89,12 +100,14 @@ func TestNewMySQL(t *testing.T) {
 
 func TestMySQL_Ping(t *testing.T) {
 	tests := []struct {
-		name    string
-		config  testContainerConfig
-		wantErr error
+		name       string
+		shouldFail bool
+		config     testContainerConfig
+		wantErrStr string
 	}{
 		{
-			name: "fail case: incorrect user",
+			name:       "fail case: incorrect user",
+			shouldFail: true,
 			config: testContainerConfig{
 				user:     "use",
 				password: "1111",
@@ -102,10 +115,11 @@ func TestMySQL_Ping(t *testing.T) {
 				addr:     mockContainer.config.addr,
 				schema:   "ledger",
 			},
-			wantErr: &mysql.MySQLError{},
+			wantErrStr: "ping MySQL",
 		},
 		{
-			name: "fail case: incorrect password",
+			name:       "fail case: incorrect password",
+			shouldFail: true,
 			config: testContainerConfig{
 				user:     "user",
 				password: "0000",
@@ -113,10 +127,11 @@ func TestMySQL_Ping(t *testing.T) {
 				addr:     mockContainer.config.addr,
 				schema:   "ledger",
 			},
-			wantErr: &mysql.MySQLError{},
+			wantErrStr: "ping MySQL",
 		},
 		{
-			name: "fail case: incorrect protocol",
+			name:       "fail case: incorrect protocol",
+			shouldFail: true,
 			config: testContainerConfig{
 				user:     "user",
 				password: "1111",
@@ -124,10 +139,11 @@ func TestMySQL_Ping(t *testing.T) {
 				addr:     mockContainer.config.addr,
 				schema:   "ledger",
 			},
-			wantErr: &net.OpError{},
+			wantErrStr: "ping MySQL",
 		},
 		{
-			name: "fail case: incorrect address",
+			name:       "fail case: incorrect address",
+			shouldFail: true,
 			config: testContainerConfig{
 				user:     "user",
 				password: "1111",
@@ -135,10 +151,11 @@ func TestMySQL_Ping(t *testing.T) {
 				addr:     "localhost:0",
 				schema:   "ledger",
 			},
-			wantErr: &net.OpError{},
+			wantErrStr: "ping MySQL",
 		},
 		{
-			name: "fail case: incorrect schema",
+			name:       "fail case: incorrect schema",
+			shouldFail: true,
 			config: testContainerConfig{
 				user:     "user",
 				password: "1111",
@@ -146,10 +163,11 @@ func TestMySQL_Ping(t *testing.T) {
 				addr:     mockContainer.config.addr,
 				schema:   "unknown",
 			},
-			wantErr: &mysql.MySQLError{},
+			wantErrStr: "ping MySQL",
 		},
 		{
-			name: "success case: correct user, password, proto, addr, schema",
+			name:       "success case: correct user, password, proto, addr, schema",
+			shouldFail: false,
 			config: testContainerConfig{
 				user:     "user",
 				password: "1111",
@@ -157,43 +175,53 @@ func TestMySQL_Ping(t *testing.T) {
 				addr:     mockContainer.config.addr,
 				schema:   "ledger",
 			},
-			wantErr: nil,
+			wantErrStr: "",
 		},
 	}
 	for _, tt := range tests {
-		// when
-		testDB, err := NewMySQL(tt.config.dsn())
-		if err != nil {
-			t.Fatalf("Error setting up test db: %v", err)
-		}
-
-		// then
 		t.Run(tt.name, func(t *testing.T) {
-			err = testDB.Ping()
-			if !reflect.DeepEqual(reflect.TypeOf(err), reflect.TypeOf(tt.wantErr)) {
-				t.Errorf("Ping() error = %T, wantErr %T", err, tt.wantErr)
+			// given
+			testDB, err := NewMySQL(tt.config.dsn())
+			if err != nil {
+				t.Fatalf("Error setting up test db: %v", err)
 			}
-		})
 
-		// after each
-		t.Cleanup(func() {
-			testDB.Close()
+			// when
+			err = testDB.Ping()
+
+			// then
+			if tt.shouldFail {
+				if got := err.Error(); !strings.HasPrefix(got, tt.wantErrStr) {
+					t.Errorf("Ping() error = %v, wantErrStr %s", err, tt.wantErrStr)
+				}
+
+				return
+			}
+
+			if err != nil {
+				t.Errorf("Ping() error = %v, wantErrStr %s", err, tt.wantErrStr)
+			}
+
+			// after each
+			t.Cleanup(func() {
+				testDB.Close()
+			})
 		})
 	}
 }
 
 func TestMySQL_RetryPing(t *testing.T) {
 	tests := []struct {
-		name     string
-		failed   bool
-		config   testContainerConfig
-		interval time.Duration
-		reps     int
-		wantErr  error
+		name       string
+		shouldFail bool
+		config     testContainerConfig
+		interval   time.Duration
+		reps       int
+		wantErrStr string
 	}{
 		{
-			name:   "fail case: incorrect user",
-			failed: true,
+			name:       "fail case: incorrect user",
+			shouldFail: true,
 			config: testContainerConfig{
 				user:     "use",
 				password: "1111",
@@ -201,17 +229,17 @@ func TestMySQL_RetryPing(t *testing.T) {
 				addr:     mockContainer.config.addr,
 				schema:   "ledger",
 			},
-			interval: time.Second,
-			reps:     3,
-			wantErr:  &mysql.MySQLError{},
+			interval:   time.Second,
+			reps:       3,
+			wantErrStr: "ping MySQL",
 		},
 		{
-			name:     "success case: correct user, password, proto, addr, schema",
-			failed:   false,
-			config:   mockContainer.config,
-			interval: time.Second,
-			reps:     3,
-			wantErr:  nil,
+			name:       "success case: correct user, password, proto, addr, schema",
+			shouldFail: false,
+			config:     mockContainer.config,
+			interval:   time.Second,
+			reps:       3,
+			wantErrStr: "",
 		},
 	}
 	for _, tt := range tests {
@@ -225,18 +253,24 @@ func TestMySQL_RetryPing(t *testing.T) {
 			// when
 			start := time.Now()
 			err = testDB.RetryPing(tt.interval, tt.reps)
-			elapsed := time.Now().Sub(start).Round(time.Second)
+			elapsed := time.Since(start).Round(time.Second)
 
 			// then
-			if tt.failed {
+			if tt.shouldFail {
 				wantDur := tt.interval * time.Duration(tt.reps)
 				if elapsed != wantDur {
 					t.Errorf("RetryPing() elapsed = %v, wantDur %v", elapsed, wantDur)
 				}
+
+				if got := err.Error(); !strings.HasPrefix(got, tt.wantErrStr) {
+					t.Errorf("RetryPing() error = %v, wantErrStr %s", err, tt.wantErrStr)
+				}
+
+				return
 			}
 
-			if !reflect.DeepEqual(reflect.TypeOf(err), reflect.TypeOf(tt.wantErr)) {
-				t.Errorf("RetryPing() error = %T, wantErr %T", err, tt.wantErr)
+			if err != nil {
+				t.Errorf("RetryPing() error = %v, wantErrStr %s", err, tt.wantErrStr)
 			}
 
 			// after each
@@ -272,7 +306,7 @@ func TestMySQL_Close(t *testing.T) {
 
 			// then
 			if !reflect.DeepEqual(reflect.TypeOf(err), reflect.TypeOf(tt.wantErr)) {
-				t.Errorf("Close() error = %T, wantErr %T", err, tt.wantErr)
+				t.Errorf("Close() error = %T, wantErrStr %T", err, tt.wantErr)
 			}
 		})
 	}

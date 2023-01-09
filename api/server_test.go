@@ -1,8 +1,8 @@
 package api
 
 import (
-	"net"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/leegeobuk/financial-ledger/cfg"
@@ -18,21 +18,21 @@ func TestServer_Run(t *testing.T) {
 
 	tests := []struct {
 		name       string
-		server     *Server
 		shouldFail bool
-		wantErr    error
+		server     *Server
+		wantErrStr string
 	}{
 		{
 			name:       "fail case: port=xxx",
-			server:     setupServer(host, "xxx"),
 			shouldFail: true,
-			wantErr:    &net.OpError{},
+			server:     setupServer(host, "xxx"),
+			wantErrStr: "run api server",
 		},
 		{
 			name:       "success case: all configs are valid",
-			server:     New(nil),
 			shouldFail: false,
-			wantErr:    nil,
+			server:     New(nil),
+			wantErrStr: "",
 		},
 	}
 	for _, tt := range tests {
@@ -46,11 +46,18 @@ func TestServer_Run(t *testing.T) {
 					err = tt.server.Run()
 				}()
 			}
-			tt.server.Shutdown()
+			_ = tt.server.Shutdown()
 
 			// then
-			if !reflect.DeepEqual(reflect.TypeOf(err), reflect.TypeOf(tt.wantErr)) {
-				t.Errorf("Run() error = %T, wantErr %T", err, tt.wantErr)
+			if tt.shouldFail {
+				if got := err.Error(); !strings.HasPrefix(got, tt.wantErrStr) {
+					t.Errorf("Run() error = %v, wantErrStr %s", err, tt.wantErrStr)
+				}
+				return
+			}
+
+			if err != nil {
+				t.Errorf("Run() error = %v, wantErrStr %s", err, tt.wantErrStr)
 			}
 		})
 	}
@@ -77,14 +84,14 @@ func TestServer_Shutdown(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// when
 			go func() {
-				tt.server.Run()
+				_ = tt.server.Run()
 			}()
 
 			err := tt.server.Shutdown()
 
 			// then
 			if !reflect.DeepEqual(reflect.TypeOf(err), reflect.TypeOf(tt.wantErr)) {
-				t.Errorf("Shutdown() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Shutdown() error = %v, wantErrStr %v", err, tt.wantErr)
 			}
 		})
 	}
