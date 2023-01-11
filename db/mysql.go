@@ -39,14 +39,14 @@ func NewMySQL(dsn string) (*MySQL, error) {
 }
 
 // Migrate migrates db tables if any change is detected.
-func (mysql *MySQL) Migrate() error {
+func (mysql *MySQL) Migrate(path string) error {
 	driver, err := _mysql.WithInstance(mysql.db, &_mysql.Config{})
 	if err != nil {
 		return fmt.Errorf("WithInstance: %w", err)
 	}
 
 	m, err := _migrate.NewWithDatabaseInstance(
-		"file://./migrations",
+		fmt.Sprintf("file://%s", path),
 		cfg.Env.DB.Type,
 		driver,
 	)
