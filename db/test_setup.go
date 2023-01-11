@@ -25,7 +25,7 @@ type testContainerConfig struct {
 }
 
 func (cfg testContainerConfig) dsn() string {
-	return fmt.Sprintf("%s:%s@%s(%s)/%s", cfg.user, cfg.password, cfg.proto, cfg.addr, cfg.schema)
+	return fmt.Sprintf("%s:%s@%s(%s)/%s?multiStatements=true", cfg.user, cfg.password, cfg.proto, cfg.addr, cfg.schema)
 }
 
 // setupTestContainer creates an instance of the testContainer type.

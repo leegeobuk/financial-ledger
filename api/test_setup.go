@@ -12,7 +12,7 @@ func setupServer(host, port string) (testServer *Server) {
 	testServer = &Server{
 		port: port,
 		host: host,
-		server: &http.Server{ //nolint:gosec
+		server: &http.Server{
 			Addr:    ":" + port,
 			Handler: router,
 		},

@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS user_account (
+    user_id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+    username VARCHAR(64) NOT NULL,
+    PRIMARY KEY (user_id)
+) ENGINE=INNODB;

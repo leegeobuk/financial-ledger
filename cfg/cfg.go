@@ -18,11 +18,21 @@ type DB struct {
 	Proto    string `mapstructure:"protocol"`
 	Addr     string `mapstructure:"address"`
 	Schema   string `mapstructure:"schema"`
+	Params   string `mapstructure:"params"`
 }
 
 // DSN returns Data Source Name for db connection.
 func (db DB) DSN() string {
-	return fmt.Sprintf("%s:%s@%s(%s)/%s", db.User, db.Password, db.Proto, db.Addr, db.Schema)
+	user, password := db.User, db.Password
+	proto, addr := db.Proto, db.Addr
+	schema, params := db.Schema, db.Params
+
+	dsn := fmt.Sprintf("%s:%s@%s(%s)/%s", user, password, proto, addr, schema)
+	if params != "" {
+		dsn = fmt.Sprintf("%s?%s", dsn, params)
+	}
+
+	return dsn
 }
 
 // Server contains server-related envs.

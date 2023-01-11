@@ -2,11 +2,16 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	_migrate "github.com/golang-migrate/migrate/v4"
+	_mysql "github.com/golang-migrate/migrate/v4/database/mysql"
 	"github.com/leegeobuk/financial-ledger/cfg"
+
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 // MySQL communicates with MySQL server.
@@ -31,6 +36,31 @@ func NewMySQL(dsn string) (*MySQL, error) {
 	// db.SetMaxIdleConns(10)
 
 	return &MySQL{db: db}, nil
+}
+
+// Migrate migrates db tables if any change is detected.
+func (mysql *MySQL) Migrate() error {
+	driver, err := _mysql.WithInstance(mysql.db, &_mysql.Config{})
+	if err != nil {
+		return fmt.Errorf("WithInstance: %w", err)
+	}
+
+	m, err := _migrate.NewWithDatabaseInstance(
+		"file://./migrations",
+		cfg.Env.DB.Type,
+		driver,
+	)
+	if err != nil {
+		return fmt.Errorf("NewWithDatabaseInstance: %w", err)
+	}
+
+	if err = m.Up(); err != nil {
+		if !errors.Is(err, _migrate.ErrNoChange) {
+			return fmt.Errorf("up: %w", err)
+		}
+	}
+
+	return nil
 }
 
 // Ping verifies the db connection.

@@ -1,8 +1,6 @@
 package api
 
-import (
-	"github.com/gin-gonic/gin"
-)
+import "github.com/gin-gonic/gin"
 
 //	@Tags			Basic
 //	@Summary		Ping
