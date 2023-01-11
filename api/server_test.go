@@ -53,6 +53,7 @@ func TestServer_Run(t *testing.T) {
 				if got := err.Error(); !strings.HasPrefix(got, tt.wantErrStr) {
 					t.Errorf("Run() error = %v, wantErrStr %s", err, tt.wantErrStr)
 				}
+
 				return
 			}
 

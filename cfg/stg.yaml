@@ -5,6 +5,7 @@ db:
   protocol: "tcp"
   address: "ledger-db:3306"
   schema: "household_ledger"
+  params: "multiStatements=true"
 
 server:
   host: "http://127.0.0.1"

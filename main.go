@@ -88,6 +88,11 @@ func main() {
 		log.Fatalf("Failed pinging db for %s: %v", reps*interval, err)
 	}
 
+	log.Println("Migrating db tables...")
+	if err = mysql.Migrate(); err != nil {
+		log.Fatalf("Failed to migrate db tables: %v", err)
+	}
+
 	log.Println("Creating API server...")
 	server := api.New(mysql)
 
