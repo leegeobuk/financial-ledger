@@ -9,10 +9,10 @@ build: 		## Build executable
 	set	GOOS=$(os)& set	GOARCH=$(arch)& go build -o ./$(name) main.go
 
 buildimage:	## Build docker image
-	docker build -t financial-ledger:$(profile) -f ./docker/Dockerfile-$(profile) .
+	docker build -t household-ledger:$(profile) -f ./docker/Dockerfile-$(profile) .
 
 runimage:	## Run app docker image
-	docker run -d --rm --network ledger --name ledger -p 8080:8080 financial-ledger:$(profile)
+	docker run -d --rm --network household-ledger --name ledger -p 8080:8080 household-ledger:$(profile)
 
 fmt:		## Formats code and swagger annotations
 	go fmt ./...

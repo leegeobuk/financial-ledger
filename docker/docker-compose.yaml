@@ -14,9 +14,9 @@ services:
     ports:
       - 3306:3306
     networks:
-      - ledger
+      - household-ledger
 
 networks:
-  ledger:
-    name: ledger
+  household-ledger:
+    name: household-ledger
     driver: bridge

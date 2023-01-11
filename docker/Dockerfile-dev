@@ -7,14 +7,14 @@ WORKDIR /ledger
 COPY .. .
 RUN go mod download
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o financial-ledger main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o household-ledger main.go
 
 FROM scratch
 
-COPY --from=build /ledger/financial-ledger .
+COPY --from=build /ledger/household-ledger .
 COPY --from=build /ledger/cfg/dev.yaml ./cfg/
 
 ENV CONFIG_PROFILE=dev
 EXPOSE 8080
 
-CMD ["./financial-ledger"]
+CMD ["./household-ledger"]
