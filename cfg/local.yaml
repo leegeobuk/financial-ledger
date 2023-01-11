@@ -4,7 +4,7 @@ db:
   password: "1111"
   protocol: "tcp"
   address: "127.0.0.1:3306"
-  schema: "ledger"
+  schema: "household_ledger"
 
 server:
   host: "http://127.0.0.1"

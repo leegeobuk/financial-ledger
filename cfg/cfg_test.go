@@ -16,22 +16,22 @@ func TestDB_DSN(t *testing.T) {
 		{
 			name:    "success case: profile=local",
 			profile: "local",
-			want:    "user:1111@tcp(127.0.0.1:3306)/ledger",
+			want:    "user:1111@tcp(127.0.0.1:3306)/household_ledger",
 		},
 		{
 			name:    "success case: profile=dev",
 			profile: "dev",
-			want:    "user:1111@tcp(ledger-db:3306)/ledger",
+			want:    "user:1111@tcp(ledger-db:3306)/household_ledger",
 		},
 		{
 			name:    "success case: profile=stg",
 			profile: "stg",
-			want:    "user:1111@tcp(ledger-db:3306)/ledger",
+			want:    "user:1111@tcp(ledger-db:3306)/household_ledger",
 		},
 		{
 			name:    "success case: profile=prd",
 			profile: "prd",
-			want:    "user:1111@tcp(ledger-db:3306)/ledger",
+			want:    "user:1111@tcp(ledger-db:3306)/household_ledger",
 		},
 	}
 	for _, tt := range tests {
