@@ -6,12 +6,11 @@ import (
 	"testing"
 
 	"github.com/leegeobuk/financial-ledger/cfg"
-	"github.com/leegeobuk/financial-ledger/testutil"
 )
 
 func TestServer_Run(t *testing.T) {
 	// given
-	if err := testutil.SetupConfig("local"); err != nil {
+	if err := cfg.Load("../cfg", "local"); err != nil {
 		t.Fatalf("Error setting up config: %v", err)
 	}
 	host := cfg.Env.Server.Host
@@ -66,7 +65,7 @@ func TestServer_Run(t *testing.T) {
 
 func TestServer_Shutdown(t *testing.T) {
 	// given
-	if err := testutil.SetupConfig("local"); err != nil {
+	if err := cfg.Load("../cfg", "local"); err != nil {
 		t.Fatalf("Error setting up config: %v", err)
 	}
 

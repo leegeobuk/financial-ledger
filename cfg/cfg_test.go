@@ -1,10 +1,8 @@
 package cfg
 
 import (
-	"fmt"
+	"strings"
 	"testing"
-
-	"github.com/spf13/viper"
 )
 
 func TestDB_DSN(t *testing.T) {
@@ -37,7 +35,7 @@ func TestDB_DSN(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// given
-			if err := setupConfig(tt.profile); err != nil {
+			if err := Load(".", tt.profile); err != nil {
 				t.Fatalf("Error setting up config: %v", err)
 			}
 
@@ -48,17 +46,61 @@ func TestDB_DSN(t *testing.T) {
 	}
 }
 
-func setupConfig(profile string) error {
-	viper.AddConfigPath("../cfg")
-	viper.SetConfigName(profile)
-	viper.SetConfigType("yaml")
-	if err := viper.ReadInConfig(); err != nil {
-		return fmt.Errorf("load config: %w", err)
+func TestLoad(t *testing.T) {
+	tests := []struct {
+		name       string
+		shouldFail bool
+		profile    string
+		wantErrStr string
+	}{
+		{
+			name:       "fail case: profile=unknown",
+			shouldFail: true,
+			profile:    "unknown",
+			wantErrStr: "load config",
+		},
+		{
+			name:       "success case: profile=local",
+			shouldFail: false,
+			profile:    "local",
+			wantErrStr: "",
+		},
+		{
+			name:       "success case: profile=dev",
+			shouldFail: false,
+			profile:    "dev",
+			wantErrStr: "",
+		},
+		{
+			name:       "success case: profile=stg",
+			shouldFail: false,
+			profile:    "stg",
+			wantErrStr: "",
+		},
+		{
+			name:       "success case: profile=prd",
+			shouldFail: false,
+			profile:    "prd",
+			wantErrStr: "",
+		},
 	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// when
+			err := Load(".", tt.profile)
 
-	if err := viper.Unmarshal(&Env); err != nil {
-		return fmt.Errorf("unmarshal envs to config: %w", err)
+			// then
+			if tt.shouldFail {
+				if got := err.Error(); !strings.HasPrefix(got, tt.wantErrStr) {
+					t.Errorf("loadConfig() error = %v, wantErrStr %s", err, tt.wantErrStr)
+				}
+
+				return
+			}
+
+			if err != nil {
+				t.Errorf("loadConfig() error = %v, wantErrStr %s", err, tt.wantErrStr)
+			}
+		})
 	}
-
-	return nil
 }

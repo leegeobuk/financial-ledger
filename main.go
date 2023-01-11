@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -14,13 +13,12 @@ import (
 	"github.com/leegeobuk/financial-ledger/api"
 	"github.com/leegeobuk/financial-ledger/cfg"
 	"github.com/leegeobuk/financial-ledger/db"
-	"github.com/spf13/viper"
 )
 
 func init() {
 	profile := getProfile()
 	log.Println("CONFIG_PROFILE:", profile)
-	if err := loadConfig(profile); err != nil {
+	if err := cfg.Load("./cfg", profile); err != nil {
 		log.Fatalf("Error loading config file: %v", err)
 	}
 
@@ -34,21 +32,6 @@ func getProfile() string {
 	}
 
 	return profile
-}
-
-func loadConfig(profile string) error {
-	viper.AddConfigPath("./cfg")
-	viper.SetConfigName(profile)
-	viper.SetConfigType("yaml")
-	if err := viper.ReadInConfig(); err != nil {
-		return fmt.Errorf("load config: %w", err)
-	}
-
-	if err := viper.Unmarshal(&cfg.Env); err != nil {
-		return fmt.Errorf("unmarshal envs to config: %w", err)
-	}
-
-	return nil
 }
 
 func setGinMode(profile string) {
@@ -89,7 +72,7 @@ func main() {
 	}
 
 	log.Println("Migrating db tables...")
-	if err = mysql.Migrate(); err != nil {
+	if err = mysql.Migrate("./db/migrations"); err != nil {
 		log.Fatalf("Failed to migrate db tables: %v", err)
 	}
 

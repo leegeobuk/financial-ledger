@@ -1,6 +1,10 @@
 package cfg
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/spf13/viper"
+)
 
 var Env = Config{}
 
@@ -39,4 +43,21 @@ func (db DB) DSN() string {
 type Server struct {
 	Host string `mapstructure:"host"`
 	Port string `mapstructure:"port"`
+}
+
+// Load loads config file located at given path
+// according to given profile.
+func Load(path, profile string) error {
+	viper.AddConfigPath(path)
+	viper.SetConfigName(profile)
+	viper.SetConfigType("yaml")
+	if err := viper.ReadInConfig(); err != nil {
+		return fmt.Errorf("load config: %w", err)
+	}
+
+	if err := viper.Unmarshal(&Env); err != nil {
+		return fmt.Errorf("unmarshal envs to config: %w", err)
+	}
+
+	return nil
 }

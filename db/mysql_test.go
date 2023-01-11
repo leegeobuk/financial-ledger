@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/leegeobuk/financial-ledger/testutil"
+	"github.com/leegeobuk/financial-ledger/cfg"
 )
 
 var (
@@ -18,7 +18,7 @@ var (
 
 func TestMain(m *testing.M) {
 	// setup
-	if err := testutil.SetupConfig("local"); err != nil {
+	if err := cfg.Load("../cfg", "local"); err != nil {
 		log.Fatalf("Error setting up config: %v", err)
 	}
 

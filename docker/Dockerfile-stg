@@ -13,6 +13,7 @@ FROM scratch
 
 COPY --from=build /ledger/household-ledger .
 COPY --from=build /ledger/cfg/stg.yaml ./cfg/
+COPY --from=build /ledger/db/migrations/ ./db/migrations/
 
 ENV CONFIG_PROFILE=stg
 EXPOSE 8080
