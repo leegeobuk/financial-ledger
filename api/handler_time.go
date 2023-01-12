@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-    "github.com/leegeobuk/household-ledger/api/resource"
+	"github.com/leegeobuk/household-ledger/api/resource"
 )
 
 //	@Tags			Basic

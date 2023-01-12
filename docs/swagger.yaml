@@ -27,6 +27,19 @@ definitions:
       error:
         type: string
     type: object
+  resource.ResGetLedger:
+    properties:
+      date:
+        type: string
+      description:
+        type: string
+      income:
+        type: integer
+      ledger_id:
+        type: string
+      user_id:
+        type: string
+    type: object
   resource.ResGetTime:
     properties:
       date:
@@ -41,7 +54,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Add ledger
+      description: Adds ledger to db.
       parameters:
       - description: Add ledger request body
         in: body
@@ -64,9 +77,40 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/resource.ResErr'
-      summary: Ledger
+      summary: Add ledger
       tags:
-      - Basic
+      - Ledger
+  /api/household-ledger/ledger/{id}:
+    get:
+      description: Gets ledger with {id} from db.
+      parameters:
+      - description: ledger id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resource.ResGetLedger'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/resource.ResErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/resource.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/resource.ResErr'
+      summary: Get ledger
+      tags:
+      - Ledger
   /api/household-ledger/ping:
     get:
       description: Ping

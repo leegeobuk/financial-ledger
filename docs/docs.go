@@ -18,7 +18,7 @@ const docTemplate = `{
     "paths": {
         "/api/household-ledger/ledger": {
             "post": {
-                "description": "Add ledger",
+                "description": "Adds ledger to db.",
                 "consumes": [
                     "application/json"
                 ],
@@ -26,9 +26,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Basic"
+                    "Ledger"
                 ],
-                "summary": "Ledger",
+                "summary": "Add ledger",
                 "parameters": [
                     {
                         "description": "Add ledger request body",
@@ -49,6 +49,53 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/household-ledger/ledger/{id}": {
+            "get": {
+                "description": "Gets ledger with {id} from db.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ledger"
+                ],
+                "summary": "Get ledger",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ledger id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResGetLedger"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/resource.ResErr"
                         }
@@ -154,6 +201,26 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "resource.ResGetLedger": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "income": {
+                    "type": "integer"
+                },
+                "ledger_id": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }
