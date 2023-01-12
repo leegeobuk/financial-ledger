@@ -1,12 +1,10 @@
 package model
 
-import "time"
-
 // Ledger represents ledger data.
 type Ledger struct {
-	LedgerID    string
-	Description string
-	Income      int
-	Date        time.Time
-	UserID      string
+	LedgerID string
+	UserID   string
+	Desc     string
+	Income   int
+	Date     string
 }

@@ -1,6 +1,11 @@
 package resource
 
-// ReqAddLedger is a request for adding ledger.
+// ReqGetLedger represents request for getting ledger.
+type ReqGetLedger struct {
+	LedgerID uint `uri:"id" binding:"min=1"`
+}
+
+// ReqAddLedger represents request body for adding ledger.
 type ReqAddLedger struct {
 	UserID string `json:"user_id" binding:"required"`
 	Desc   string `json:"description" binding:"required"`
