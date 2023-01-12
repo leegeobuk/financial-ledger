@@ -62,9 +62,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/household-ledger/ledger/{id}": {
+        "/api/household-ledger/ledger/{ledger_id}": {
             "get": {
-                "description": "Gets ledger with {id} from db.",
+                "description": "Gets ledger with {ledger_id} from db.",
                 "produces": [
                     "application/json"
                 ],
@@ -76,7 +76,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "ledger id",
-                        "name": "id",
+                        "name": "ledger_id",
                         "in": "path",
                         "required": true
                     }
@@ -86,6 +86,53 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/resource.ResGetLedger"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/household-ledger/ledgers/{user_id}": {
+            "get": {
+                "description": "Gets ledgers with {user_id} from db.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ledger"
+                ],
+                "summary": "Get ledgers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user id",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResGetLedgers"
                         }
                     },
                     "400": {
@@ -222,6 +269,17 @@ const docTemplate = `{
                 },
                 "user_id": {
                     "type": "string"
+                }
+            }
+        },
+        "resource.ResGetLedgers": {
+            "type": "object",
+            "properties": {
+                "ledgers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/resource.ResGetLedger"
+                    }
                 }
             }
         },

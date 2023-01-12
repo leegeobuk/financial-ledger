@@ -16,13 +16,14 @@ type Config struct {
 
 // DB contains database-related envs.
 type DB struct {
-	Type     string `mapstructure:"type"`
-	User     string `mapstructure:"user"`
-	Password string `mapstructure:"password"`
-	Proto    string `mapstructure:"protocol"`
-	Addr     string `mapstructure:"address"`
-	Schema   string `mapstructure:"schema"`
-	Params   string `mapstructure:"params"`
+	Type       string `mapstructure:"type"`
+	User       string `mapstructure:"user"`
+	Password   string `mapstructure:"password"`
+	Proto      string `mapstructure:"protocol"`
+	Addr       string `mapstructure:"address"`
+	Schema     string `mapstructure:"schema"`
+	Params     string `mapstructure:"params"`
+	Migrations string `mapstructure:"migrations"`
 }
 
 // DSN returns Data Source Name for db connection.

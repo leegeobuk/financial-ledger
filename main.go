@@ -72,7 +72,7 @@ func main() {
 	}
 
 	log.Println("Migrating db tables...")
-	if err = mysql.Migrate("./db/migrations"); err != nil {
+	if err = mysql.Migrate(cfg.Env.DB.Migrations); err != nil {
 		log.Fatalf("Failed to migrate db tables: %v", err)
 	}
 
