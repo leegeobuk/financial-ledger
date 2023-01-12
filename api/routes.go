@@ -19,6 +19,7 @@ func (s *Server) setRoutes() {
 	ledger.GET("/time", s.Time)
 
 	// ledger
-	ledger.GET("/ledger/:id", mw.ValidateGetLedger, s.GetLedger)
+	ledger.GET("/ledgers/:user_id", mw.ValidateGetLedgers, s.GetLedgers)
+	ledger.GET("/ledger/:ledger_id", mw.ValidateGetLedger, s.GetLedger)
 	ledger.POST("/ledger", mw.ValidateAddLedger, s.AddLedger)
 }

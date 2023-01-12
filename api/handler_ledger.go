@@ -1,30 +1,65 @@
 package api
 
 import (
-	"database/sql"
-	"errors"
-
 	"github.com/gin-gonic/gin"
 	"github.com/leegeobuk/household-ledger/api/resource"
 )
 
 //	@Tags			Ledger
-//	@Summary		Get ledger
-//	@Description	Gets ledger with {id} from db.
+//	@Summary		Get ledgers
+//	@Description	Gets ledgers with {user_id} from db.
 //	@Produce		json
-//	@Param			id	path		string	true	"ledger id"
-//	@Success		200	{object}	resource.ResGetLedger
-//	@Failure		400	{object}	resource.ResErr
-//	@Failure		404	{object}	resource.ResErr
-//	@Failure		500	{object}	resource.ResErr
-//	@Router			/api/household-ledger/ledger/{id} [get]
+//	@Param			user_id	path		string	true	"user id"
+//	@Success		200		{object}	resource.ResGetLedgers
+//	@Failure		400		{object}	resource.ResErr
+//	@Failure		404		{object}	resource.ResErr
+//	@Failure		500		{object}	resource.ResErr
+//	@Router			/api/household-ledger/ledgers/{user_id} [get]
+func (s *Server) GetLedgers(c *gin.Context) {
+	reqURI := c.MustGet("reqURI").(resource.ReqGetLedgers)
+
+	ledgers, err := s.db.FindLedgers(reqURI.UserID)
+	if err != nil {
+		resource.Error(c, err)
+		return
+	}
+
+	if len(ledgers) == 0 {
+		resource.NotFound(c, err)
+		return
+	}
+
+	res := resource.ResGetLedgers{}
+	for _, ledger := range ledgers {
+		resGetLedger := resource.ResGetLedger{
+			LedgerID: ledger.LedgerID,
+			UserID:   ledger.UserID,
+			Desc:     ledger.Desc,
+			Income:   ledger.Income,
+			Date:     ledger.Date,
+		}
+		res.Ledgers = append(res.Ledgers, resGetLedger)
+	}
+
+	resource.OK(c, res)
+}
+
+//	@Tags			Ledger
+//	@Summary		Get ledger
+//	@Description	Gets ledger with {ledger_id} from db.
+//	@Produce		json
+//	@Param			ledger_id	path		string	true	"ledger id"
+//	@Success		200			{object}	resource.ResGetLedger
+//	@Failure		400			{object}	resource.ResErr
+//	@Failure		404			{object}	resource.ResErr
+//	@Failure		500			{object}	resource.ResErr
+//	@Router			/api/household-ledger/ledger/{ledger_id} [get]
 func (s *Server) GetLedger(c *gin.Context) {
 	reqURI := c.MustGet("reqURI").(resource.ReqGetLedger)
 
-	// query db
-	ledger, err := s.db.FindLedger(reqURI.LedgerID)
+	ledger, noRows, err := s.db.FindLedger(reqURI.LedgerID)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
+		if noRows {
 			resource.NotFound(c, err)
 			return
 		}

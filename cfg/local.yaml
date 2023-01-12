@@ -6,6 +6,7 @@ db:
   address: "127.0.0.1:3306"
   schema: "household_ledger"
   params: "multiStatements=true"
+  migrations: "./db/migrations"
 
 server:
   host: "http://127.0.0.1"
