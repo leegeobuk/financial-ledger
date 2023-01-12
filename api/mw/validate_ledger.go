@@ -5,6 +5,7 @@ import (
 	"github.com/leegeobuk/household-ledger/api/resource"
 )
 
+// ValidateGetLedgers validates request of get ledgers.
 func ValidateGetLedgers(c *gin.Context) {
 	var reqURI resource.ReqGetLedgers
 	if err := c.ShouldBindUri(&reqURI); err != nil {
@@ -16,7 +17,7 @@ func ValidateGetLedgers(c *gin.Context) {
 	c.Next()
 }
 
-// ValidateGetLedger validates body of get ledger request.
+// ValidateGetLedger validates request of get ledger request.
 func ValidateGetLedger(c *gin.Context) {
 	var reqURI resource.ReqGetLedger
 	if err := c.ShouldBindUri(&reqURI); err != nil {

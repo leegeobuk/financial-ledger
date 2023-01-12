@@ -31,6 +31,11 @@ func NotFound(c *gin.Context, err error) {
 	c.JSON(http.StatusNotFound, ResErr{Error: err.Error()})
 }
 
+// Conflict is a convenience function for 409 response.
+func Conflict(c *gin.Context, err error) {
+	c.JSON(http.StatusConflict, ResErr{Error: err.Error()})
+}
+
 // Error is a convenience function for 500 response.
 func Error(c *gin.Context, err error) {
 	c.JSON(http.StatusInternalServerError, ResErr{Error: err.Error()})

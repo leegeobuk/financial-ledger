@@ -45,7 +45,7 @@ func (mysql *MySQL) FindLedger(ledgerID uint) (*model.Ledger, bool, error) {
 	); err != nil {
 		err = fmt.Errorf("find ledger: %w", err)
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, true, err
+			return nil, true, nil
 		}
 
 		return nil, false, err
