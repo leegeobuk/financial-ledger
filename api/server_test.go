@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/leegeobuk/financial-ledger/cfg"
+	"github.com/leegeobuk/household-ledger/cfg"
 )
 
 func TestServer_Run(t *testing.T) {

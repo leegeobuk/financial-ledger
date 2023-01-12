@@ -9,8 +9,8 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/leegeobuk/financial-ledger/cfg"
-	"github.com/leegeobuk/financial-ledger/db"
+	"github.com/leegeobuk/household-ledger/cfg"
+	"github.com/leegeobuk/household-ledger/db"
 )
 
 // Server can start and stop api server.

@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/leegeobuk/financial-ledger/api"
-	"github.com/leegeobuk/financial-ledger/cfg"
-	"github.com/leegeobuk/financial-ledger/db"
+	"github.com/leegeobuk/household-ledger/api"
+	"github.com/leegeobuk/household-ledger/cfg"
+	"github.com/leegeobuk/household-ledger/db"
 )
 
 func init() {

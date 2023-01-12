@@ -8,7 +8,7 @@ import (
 
 	_migrate "github.com/golang-migrate/migrate/v4"
 	_mysql "github.com/golang-migrate/migrate/v4/database/mysql"
-	"github.com/leegeobuk/financial-ledger/cfg"
+	"github.com/leegeobuk/household-ledger/cfg"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
