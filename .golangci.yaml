@@ -187,7 +187,6 @@ linters:
     - gosec
     - importas
     - nilerr
-    - nlreturn
     - nosprintfhostport
     - predeclared
     - reassign
@@ -257,6 +256,7 @@ linters:
     - nakedret
     - nestif
     - nilnil
+    - nlreturn
     - noctx
     - nolintlint
     - nonamedreturns

@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/leegeobuk/financial-ledger/cfg"
+	"github.com/leegeobuk/household-ledger/cfg"
 )
 
 var (

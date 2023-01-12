@@ -1,6 +1,5 @@
 CREATE TABLE IF NOT EXISTS user_login (
-    user_id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-    email VARCHAR(64) NOT NULL,
-    pw_hash VARCHAR(250) NOT NULL,
+    user_id VARCHAR(64) NOT NULL,
+    passwd VARCHAR(250) NOT NULL,
     PRIMARY KEY (user_id)
 ) ENGINE=INNODB;

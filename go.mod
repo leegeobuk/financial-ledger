@@ -1,4 +1,4 @@
-module github.com/leegeobuk/financial-ledger
+module github.com/leegeobuk/household-ledger
 
 go 1.19
 

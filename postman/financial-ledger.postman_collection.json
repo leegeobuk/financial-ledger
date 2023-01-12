@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "584bba72-3e03-4ccb-a0b1-65fb98321f22",
-		"name": "financial-ledger",
+		"name": "household-ledger",
 		"description": "Collection of requests for financial-ledger API.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "9360560"
@@ -26,14 +26,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{host}}:{{port}}/api/ledger/ping",
+					"raw": "{{host}}:{{port}}/api/household-ledger/ping",
 					"host": [
 						"{{host}}"
 					],
 					"port": "{{port}}",
 					"path": [
 						"api",
-						"ledger",
+						"household-ledger",
 						"ping"
 					]
 				}
@@ -59,15 +59,57 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{host}}:{{port}}/api/ledger/time",
+					"raw": "{{host}}:{{port}}/api/household-ledger/time",
 					"host": [
 						"{{host}}"
 					],
 					"port": "{{port}}",
 					"path": [
 						"api",
-						"ledger",
+						"household-ledger",
 						"time"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddLedger",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code should be 201\", function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_id\": \"user\",\r\n    \"description\": \"Ice cream\",\r\n    \"income\": -5000,\r\n    \"date\": \"2022-01-15\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/api/household-ledger/ledger",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"household-ledger",
+						"ledger"
 					]
 				}
 			},
