@@ -43,12 +43,11 @@ func (mysql *MySQL) FindLedger(ledgerID uint) (*model.Ledger, bool, error) {
 	if err := mysql.db.QueryRow(query, ledgerID).Scan(
 		&l.LedgerID, &l.UserID, &l.Desc, &l.Income, &l.Date,
 	); err != nil {
-		err = fmt.Errorf("find ledger: %w", err)
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, true, nil
 		}
 
-		return nil, false, err
+		return nil, false, fmt.Errorf("find ledger: %w", err)
 	}
 
 	return &l, false, nil

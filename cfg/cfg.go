@@ -11,6 +11,7 @@ var Env = Config{}
 // Config contains all envs loaded from config file.
 type Config struct {
 	DB     DB     `mapstructure:"db"`
+	Token  Token  `mapstructure:"token"`
 	Server Server `mapstructure:"server"`
 }
 
@@ -38,6 +39,14 @@ func (db DB) DSN() string {
 	}
 
 	return dsn
+}
+
+// Token contains token-related envs.
+type Token struct {
+	AccessDuration  int    `mapstructure:"accessDuration"`
+	RefreshDuration int    `mapstructure:"refreshDuration"`
+	AccessKey       string `mapstructure:"accessKey"`
+	RefreshKey      string `mapstructure:"refreshKey"`
 }
 
 // Server contains server-related envs.

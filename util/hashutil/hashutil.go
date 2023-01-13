@@ -8,3 +8,9 @@ func HashPassword(password string, cost int) (string, error) {
 
 	return string(hashed), err
 }
+
+// CompareHashAndPassword compares and checks
+// if given hash and password are equal.
+func CompareHashAndPassword(hashedPW, plainPW string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPW), []byte(plainPW)) //nolint:wrapcheck
+}

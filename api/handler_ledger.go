@@ -59,12 +59,12 @@ func (s *Server) GetLedger(c *gin.Context) {
 
 	ledger, noRows, err := s.db.FindLedger(reqURI.LedgerID)
 	if err != nil {
-		if noRows {
-			resource.NotFound(c, err)
-			return
-		}
-
 		resource.Error(c, err)
+		return
+	}
+
+	if noRows {
+		resource.NotFound(c, err)
 		return
 	}
 
