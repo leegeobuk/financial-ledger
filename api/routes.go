@@ -8,9 +8,9 @@ import (
 )
 
 func (s *Server) setRoutes() {
-	docs.SwaggerInfo.Title = "Financial Ledger"
-	docs.SwaggerInfo.Description = "API document for Financial Ledger"
-	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Title = "Household Ledger"
+	docs.SwaggerInfo.Description = "API document for Household Ledger"
+	docs.SwaggerInfo.Version = "v1.0"
 	ledger := s.router.Group("/api/household-ledger")
 
 	// API Document (swagger)
@@ -20,6 +20,7 @@ func (s *Server) setRoutes() {
 
 	// user
 	ledger.POST("/user/signup", mw.ValidateSignUp, s.SignUp)
+	ledger.POST("/user/signin", mw.ValidateSignIn, s.SignIn)
 
 	// ledger
 	ledger.GET("/ledgers/:user_id", mw.ValidateGetLedgers, s.GetLedgers)

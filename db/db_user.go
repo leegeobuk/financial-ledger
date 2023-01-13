@@ -8,7 +8,7 @@ import (
 	"github.com/leegeobuk/household-ledger/api/model"
 )
 
-// FindUserLogIn retrieves user with given userID.
+// FindUserLogIn retrieves user login data from user_login with given userID.
 func (mysql *MySQL) FindUserLogIn(userID string) (*model.UserLogIn, bool, error) {
 	query := "SELECT user_id, passwd FROM user_login WHERE user_id = ?"
 

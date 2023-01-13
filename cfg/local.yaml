@@ -8,6 +8,12 @@ db:
   params: "multiStatements=true"
   migrations: "./db/migrations"
 
+token:
+  accessDuration: 1
+  refreshDuration: 7
+  accessKey: "EdDSAsigningkeymustbe64-bytelongEdDSAsigningkeymustbe64-bytelong"
+  refreshKey: "EdDSArefresshsignkeymustbe64byteEdDSArefresshsignkeymustbe64byte"
+
 server:
   host: "http://127.0.0.1"
   port: "8080"
