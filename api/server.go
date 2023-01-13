@@ -60,7 +60,7 @@ func (s *Server) setCORS() gin.IRoutes {
 	return s.router.Use(cors.New(cors.Config{
 		AllowOrigins:     strings.Split(s.host, ","),
 		AllowMethods:     []string{"GET", "POST"},
-		AllowHeaders:     []string{"Origin"},
+		AllowHeaders:     []string{"Origin", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))

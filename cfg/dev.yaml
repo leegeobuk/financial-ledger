@@ -11,8 +11,9 @@ db:
 token:
   accessDuration: 1
   refreshDuration: 7
-  accessKey: "EdDSAsigningkeymustbe64-bytelongEdDSAsigningkeymustbe64-bytelong"
-  refreshKey: "EdDSArefresshsignkeymustbe64byteEdDSArefresshsignkeymustbe64byte"
+  privatePem: "./key/private.pem"
+  publicPem: "./key/public.pem"
+  issuer: "household-ledger"
 
 server:
   host: "http://127.0.0.1"

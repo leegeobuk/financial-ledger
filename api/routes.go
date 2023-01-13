@@ -23,7 +23,7 @@ func (s *Server) setRoutes() {
 	ledger.POST("/user/signin", mw.ValidateSignIn, s.SignIn)
 
 	// ledger
-	ledger.GET("/ledgers/:user_id", mw.ValidateGetLedgers, s.GetLedgers)
-	ledger.GET("/ledger/:ledger_id", mw.ValidateGetLedger, s.GetLedger)
-	ledger.POST("/ledger", mw.ValidateAddLedger, s.AddLedger)
+	ledger.GET("/ledgers/:user_id", mw.ValidateAccessToken, mw.ValidateGetLedgers, s.GetLedgers)
+	ledger.GET("/ledger/:ledger_id", mw.ValidateAccessToken, mw.ValidateGetLedger, s.GetLedger)
+	ledger.POST("/ledger", mw.ValidateAccessToken, mw.ValidateAddLedger, s.AddLedger)
 }
