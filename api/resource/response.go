@@ -23,25 +23,25 @@ func Created(c *gin.Context, data any) {
 
 // BadRequest is a convenience function for 400 response.
 func BadRequest(c *gin.Context, err error) {
-	c.JSON(http.StatusBadRequest, ResErr{Error: err.Error()})
+	c.AbortWithStatusJSON(http.StatusBadRequest, ResErr{Error: err.Error()})
 }
 
 // NotFound is a convenience function for 404 response.
 func NotFound(c *gin.Context, err error) {
-	c.JSON(http.StatusNotFound, ResErr{Error: err.Error()})
+	c.AbortWithStatusJSON(http.StatusNotFound, ResErr{Error: err.Error()})
 }
 
 // Unauthorized is a convenience function for 401 response.
 func Unauthorized(c *gin.Context, err error) {
-	c.JSON(http.StatusUnauthorized, ResErr{Error: err.Error()})
+	c.AbortWithStatusJSON(http.StatusUnauthorized, ResErr{Error: err.Error()})
 }
 
 // Conflict is a convenience function for 409 response.
 func Conflict(c *gin.Context, err error) {
-	c.JSON(http.StatusConflict, ResErr{Error: err.Error()})
+	c.AbortWithStatusJSON(http.StatusConflict, ResErr{Error: err.Error()})
 }
 
 // Error is a convenience function for 500 response.
 func Error(c *gin.Context, err error) {
-	c.JSON(http.StatusInternalServerError, ResErr{Error: err.Error()})
+	c.AbortWithStatusJSON(http.StatusInternalServerError, ResErr{Error: err.Error()})
 }

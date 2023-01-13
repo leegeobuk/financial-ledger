@@ -94,15 +94,16 @@ func (s *Server) SignIn(c *gin.Context) {
 	}
 
 	// issue access, refresh tokens
-	accessKey, accessDur := cfg.Env.Token.AccessKey, cfg.Env.Token.AccessDuration
-	accessToken, err := tokenutil.IssueAccessToken(email, accessKey, accessDur)
+	issuer, privateKey := cfg.Env.Token.Issuer, cfg.Env.Token.PrivateKey
+	accessDur := cfg.Env.Token.AccessDuration
+	accessToken, err := tokenutil.IssueAccessToken(issuer, privateKey, accessDur)
 	if err != nil {
 		resource.Error(c, fmt.Errorf("access token: %w", err))
 		return
 	}
 
-	refreshKey, refreshDur := cfg.Env.Token.RefreshKey, cfg.Env.Token.RefreshDuration
-	refreshToken, err := tokenutil.IssueRefreshToken(email, refreshKey, refreshDur)
+	refreshDur := cfg.Env.Token.RefreshDuration
+	refreshToken, err := tokenutil.IssueRefreshToken(issuer, privateKey, refreshDur)
 	if err != nil {
 		resource.Error(c, fmt.Errorf("refresh token: %w", err))
 		return

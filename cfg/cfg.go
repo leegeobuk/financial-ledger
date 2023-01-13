@@ -1,8 +1,11 @@
 package cfg
 
 import (
+	"crypto"
 	"fmt"
+	"os"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/spf13/viper"
 )
 
@@ -45,8 +48,39 @@ func (db DB) DSN() string {
 type Token struct {
 	AccessDuration  int    `mapstructure:"accessDuration"`
 	RefreshDuration int    `mapstructure:"refreshDuration"`
-	AccessKey       string `mapstructure:"accessKey"`
-	RefreshKey      string `mapstructure:"refreshKey"`
+	PrivatePEM      string `mapstructure:"privatePem"`
+	PublicPEM       string `mapstructure:"publicPem"`
+	PrivateKey      crypto.PrivateKey
+	PublicKey       crypto.PublicKey
+	Issuer          string `mapstructure:"issuer"`
+}
+
+// LoadKeys returns private key and public key loaded from pem files.
+func (t *Token) LoadKeys() error {
+	privatePEM, err := os.ReadFile(t.PrivatePEM)
+	if err != nil {
+		return fmt.Errorf("load private.pem: %w", err)
+	}
+
+	privateKey, err := jwt.ParseEdPrivateKeyFromPEM(privatePEM)
+	if err != nil {
+		return fmt.Errorf("parse private.pem: %w", err)
+	}
+
+	publicPEM, err := os.ReadFile(t.PublicPEM)
+	if err != nil {
+		return fmt.Errorf("load public.pem: %w", err)
+	}
+
+	publicKey, err := jwt.ParseEdPublicKeyFromPEM(publicPEM)
+	if err != nil {
+		return fmt.Errorf("parse public.pem: %w", err)
+	}
+
+	t.PrivateKey = privateKey
+	t.PublicKey = publicKey
+
+	return nil
 }
 
 // Server contains server-related envs.
@@ -67,6 +101,11 @@ func Load(path, profile string) error {
 
 	if err := viper.Unmarshal(&Env); err != nil {
 		return fmt.Errorf("unmarshal envs to config: %w", err)
+	}
+
+	t := &Env.Token
+	if err := t.LoadKeys(); err != nil {
+		return fmt.Errorf("load keys: %w", err)
 	}
 
 	return nil
