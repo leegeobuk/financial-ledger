@@ -1,0 +1,441 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/household-ledger/ledger": {
+            "post": {
+                "description": "Adds ledger to db.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ledger"
+                ],
+                "summary": "Add ledger",
+                "parameters": [
+                    {
+                        "description": "Add ledger request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/resource.ReqAddLedger"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResAddLedger"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/household-ledger/ledger/{ledger_id}": {
+            "get": {
+                "description": "Gets ledger with {ledger_id} from db.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ledger"
+                ],
+                "summary": "Get ledger",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ledger id",
+                        "name": "ledger_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResGetLedger"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/household-ledger/ledgers/{user_id}": {
+            "get": {
+                "description": "Gets ledgers with {user_id} from db.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ledger"
+                ],
+                "summary": "Get ledgers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user id",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResGetLedgers"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/household-ledger/ping": {
+            "get": {
+                "description": "Ping",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Basic"
+                ],
+                "summary": "Ping",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/household-ledger/time": {
+            "get": {
+                "description": "Time",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Basic"
+                ],
+                "summary": "Time",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResGetTime"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/household-ledger/user/signin": {
+            "post": {
+                "description": "Signs user in.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Sign in",
+                "parameters": [
+                    {
+                        "description": "Sign in request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/resource.ReqSignIn"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResSignIn"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/household-ledger/user/signup": {
+            "post": {
+                "description": "Signs user up.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Sign up",
+                "parameters": [
+                    {
+                        "description": "Sign up request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/resource.ReqSignUp"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResSignUp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/resource.ResErr"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "resource.ReqAddLedger": {
+            "type": "object",
+            "required": [
+                "date",
+                "description",
+                "income",
+                "user_id"
+            ],
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "income": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "resource.ReqSignIn": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 18,
+                    "minLength": 8
+                }
+            }
+        },
+        "resource.ReqSignUp": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 18,
+                    "minLength": 8
+                }
+            }
+        },
+        "resource.ResAddLedger": {
+            "type": "object",
+            "properties": {
+                "ledger_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "resource.ResErr": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "resource.ResGetLedger": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "income": {
+                    "type": "integer"
+                },
+                "ledger_id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "resource.ResGetLedgers": {
+            "type": "object",
+            "properties": {
+                "ledgers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/resource.ResGetLedger"
+                    }
+                }
+            }
+        },
+        "resource.ResGetTime": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                }
+            }
+        },
+        "resource.ResSignIn": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "resource.ResSignUp": {
+            "type": "object",
+            "properties": {
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
