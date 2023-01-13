@@ -1,0 +1,20 @@
+db:
+  type: "mysql"
+  user: "user"
+  password: "1111"
+  protocol: "tcp"
+  address: "ledger-db:3306"
+  schema: "household_ledger"
+  params: "multiStatements=true"
+  migrations: "./db/migrations"
+
+token:
+  accessDuration: 1
+  refreshDuration: 7
+  privatePem: "./key/private.pem"
+  publicPem: "./key/public.pem"
+  issuer: "household-ledger"
+
+server:
+  host: "http://127.0.0.1"
+  port: "8080"

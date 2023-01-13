@@ -1,0 +1,22 @@
+FROM golang:1.19-alpine AS build
+RUN apk update && apk add git
+
+RUN mkdir -p /ledger
+WORKDIR /ledger
+
+COPY .. .
+RUN go mod download
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o household-ledger main.go
+
+FROM scratch
+
+COPY --from=build /ledger/household-ledger .
+COPY --from=build /ledger/cfg/stg.yaml ./cfg/
+COPY --from=build /ledger/db/migrations/ ./db/migrations/
+COPY --from=build /ledger/key/ ./key/
+
+ENV CONFIG_PROFILE=stg
+EXPOSE 8080
+
+CMD ["./household-ledger"]
