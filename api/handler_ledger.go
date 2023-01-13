@@ -24,12 +24,9 @@ func (s *Server) GetLedgers(c *gin.Context) {
 		return
 	}
 
-	if len(ledgers) == 0 {
-		resource.NotFound(c, err)
-		return
+	res := resource.ResGetLedgers{
+		Ledgers: make([]resource.ResGetLedger, 0, len(ledgers)),
 	}
-
-	res := resource.ResGetLedgers{}
 	for _, ledger := range ledgers {
 		resGetLedger := resource.ResGetLedger{
 			LedgerID: ledger.LedgerID,
