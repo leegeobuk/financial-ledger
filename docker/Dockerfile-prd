@@ -14,6 +14,7 @@ FROM scratch
 COPY --from=build /ledger/household-ledger .
 COPY --from=build /ledger/cfg/prd.yaml ./cfg/
 COPY --from=build /ledger/db/migrations/ ./db/migrations/
+COPY --from=build /ledger/key/ ./key/
 
 ENV CONFIG_PROFILE=prd
 EXPOSE 8080

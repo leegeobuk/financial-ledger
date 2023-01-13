@@ -33,7 +33,7 @@ func (s *Server) SignUp(c *gin.Context) {
 	}
 
 	if !noRows {
-		resource.Conflict(c, fmt.Errorf("email already exists: %w", err))
+		resource.Conflict(c, fmt.Errorf("email already exists: %s", email))
 		return
 	}
 

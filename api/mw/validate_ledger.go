@@ -1,6 +1,8 @@
 package mw
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/leegeobuk/household-ledger/api/resource"
 )
@@ -21,7 +23,7 @@ func ValidateGetLedgers(c *gin.Context) {
 func ValidateGetLedger(c *gin.Context) {
 	var reqURI resource.ReqGetLedger
 	if err := c.ShouldBindUri(&reqURI); err != nil {
-		resource.BadRequest(c, err)
+		resource.BadRequest(c, fmt.Errorf("validation failed: %w", err))
 		return
 	}
 
@@ -33,7 +35,7 @@ func ValidateGetLedger(c *gin.Context) {
 func ValidateAddLedger(c *gin.Context) {
 	var req resource.ReqAddLedger
 	if err := c.ShouldBindJSON(&req); err != nil {
-		resource.BadRequest(c, err)
+		resource.BadRequest(c, fmt.Errorf("validation failed: %w", err))
 		return
 	}
 

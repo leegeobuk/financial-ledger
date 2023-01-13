@@ -4,6 +4,7 @@ import (
 	"crypto"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/spf13/viper"
@@ -55,34 +56,6 @@ type Token struct {
 	Issuer          string `mapstructure:"issuer"`
 }
 
-// LoadKeys returns private key and public key loaded from pem files.
-func (t *Token) LoadKeys() error {
-	privatePEM, err := os.ReadFile(t.PrivatePEM)
-	if err != nil {
-		return fmt.Errorf("load private.pem: %w", err)
-	}
-
-	privateKey, err := jwt.ParseEdPrivateKeyFromPEM(privatePEM)
-	if err != nil {
-		return fmt.Errorf("parse private.pem: %w", err)
-	}
-
-	publicPEM, err := os.ReadFile(t.PublicPEM)
-	if err != nil {
-		return fmt.Errorf("load public.pem: %w", err)
-	}
-
-	publicKey, err := jwt.ParseEdPublicKeyFromPEM(publicPEM)
-	if err != nil {
-		return fmt.Errorf("parse public.pem: %w", err)
-	}
-
-	t.PrivateKey = privateKey
-	t.PublicKey = publicKey
-
-	return nil
-}
-
 // Server contains server-related envs.
 type Server struct {
 	Host string `mapstructure:"host"`
@@ -103,10 +76,34 @@ func Load(path, profile string) error {
 		return fmt.Errorf("unmarshal envs to config: %w", err)
 	}
 
-	t := &Env.Token
-	if err := t.LoadKeys(); err != nil {
-		return fmt.Errorf("load keys: %w", err)
+	return nil
+}
+
+// LoadKeys returns private key and public key loaded from pem files.
+func LoadKeys(pvtPath, pubPath string) error {
+	privatePEM, err := os.ReadFile(filepath.Clean(pvtPath))
+	if err != nil {
+		return fmt.Errorf("load private.pem: %w", err)
 	}
+
+	privateKey, err := jwt.ParseEdPrivateKeyFromPEM(privatePEM)
+	if err != nil {
+		return fmt.Errorf("parse private.pem: %w", err)
+	}
+
+	publicPEM, err := os.ReadFile(filepath.Clean(pubPath))
+	if err != nil {
+		return fmt.Errorf("load public.pem: %w", err)
+	}
+
+	publicKey, err := jwt.ParseEdPublicKeyFromPEM(publicPEM)
+	if err != nil {
+		return fmt.Errorf("parse public.pem: %w", err)
+	}
+
+	t := &Env.Token
+	t.PrivateKey = privateKey
+	t.PublicKey = publicKey
 
 	return nil
 }

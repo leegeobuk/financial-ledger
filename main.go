@@ -22,6 +22,12 @@ func init() {
 		log.Fatalf("Error loading config file: %v", err)
 	}
 
+	log.Println("Loading key files...")
+	privatePEM, publicPEM := cfg.Env.Token.PrivatePEM, cfg.Env.Token.PublicPEM
+	if err := cfg.LoadKeys(privatePEM, publicPEM); err != nil {
+		log.Fatalf("Error loading keys: %v", err)
+	}
+
 	setGinMode(profile)
 }
 
